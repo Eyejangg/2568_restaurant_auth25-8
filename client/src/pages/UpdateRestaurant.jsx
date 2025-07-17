@@ -5,14 +5,14 @@ const UpdateRestaurant = () => {
   //1. Get Id from URL
   const { id } = useParams();
   const [restaurant, setRestaurants] = useState({
-    title: "",
+    name: "",
     type: "",
-    img: "",
+    imageUrl: "",
   });
 
   //2. Get Restaurant by ID
   useEffect(() => {
-    fetch("http://localhost:5000/restaurants/" + id)
+    fetch("http://localhost:5000/api/v1/restaurants/" + id)
       .then((res) => {
         //convert to JSON format
         return res.json();
@@ -33,16 +33,20 @@ const UpdateRestaurant = () => {
   };
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:5000/restaurants/" + id, {
-        method: "PUT",
-        body: JSON.stringify(restaurant),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/v1/restaurants/" + id,
+        {
+          method: "PUT",
+          body: JSON.stringify(restaurant),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       if (response.ok) {
         alert("Restaurant had been update!!");
         setRestaurants({
           title: "",
           type: "",
-          img: "",
+          imageUrl: "",
         });
       }
     } catch (error) {
@@ -53,11 +57,11 @@ const UpdateRestaurant = () => {
     <div className="container mx-auto flex items-center flex-col">
       <h1 className="text-2xl mt-3">Update Your Restaurant</h1>
       <div className="mt-2">
-        <legend className="mt-2">What is your restaurant title?</legend>
+        <legend className="mt-2">What is your restaurant name?</legend>
         <input
           type="text"
-          name="title"
-          value={restaurant.title}
+          name="name"
+          value={restaurant.name}
           className="input"
           placeholder="Type here"
           onChange={handleChange}
@@ -77,22 +81,24 @@ const UpdateRestaurant = () => {
         />
       </div>
       <div className="mt-2">
-        <legend className="text-center">What is your restaurant img?</legend>
+        <legend className="text-center">
+          What is your restaurant imageUrl?
+        </legend>
         <label className="input">
           <input
             type="text"
-            name="img"
-            value={restaurant.img}
+            name="imageUrl"
+            value={restaurant.imageUrl}
             className="grow"
-            placeholder="your img link"
+            placeholder="your imageUrl link"
             onChange={handleChange}
           />
           <span className="badge badge-neutral badge-xs">*Must Type</span>
         </label>
       </div>
-      {restaurant.img && (
+      {restaurant.imageUrl && (
         <div className="flex items-center gap-2">
-          <img className="h-32" src={restaurant.img}></img>
+          <img className="h-32" src={restaurant.imageUrl}></img>
         </div>
       )}
       <div className="mt-3 space-x-2">

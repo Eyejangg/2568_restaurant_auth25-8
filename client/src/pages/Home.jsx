@@ -12,7 +12,7 @@ const Home = () => {
     }
     const result = restaurants.filter((restaurant) => {
       return (
-        restaurant.title.toLowerCase().includes(keyword.toLowerCase()) ||
+        restaurant.name.toLowerCase().includes(keyword.toLowerCase()) ||
         restaurant.type.toLowerCase().includes(keyword.toLowerCase())
       );
     });
@@ -21,7 +21,7 @@ const Home = () => {
   };
   useEffect(() => {
     //call api: getAllRestaurants
-    fetch("http://localhost:5000/restaurants")
+    fetch("http://localhost:5000/api/v1/restaurants/")
       .then((res) => {
         //convert to JSON format
         return res.json();
