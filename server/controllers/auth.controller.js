@@ -73,6 +73,7 @@ authController.signIn = async (req, res) => {
     where: { username: username },
   })
     .then((user) => {
+      //console.log(user);
       if (!user) {
         res.status(404).send({ message: "User not found :(" });
         return;

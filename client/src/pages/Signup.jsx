@@ -1,37 +1,57 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import AuthService from "../services/auth.service.js";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const Signup = () => {
-  const [restaurant, setRestaurants] = useState({
+  const [user, setUser] = useState({
+    username: "",
     name: "",
-    type: "",
-    imageUrl: "",
+    email: "",
+    password: "",
   });
+
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setRestaurants({ ...restaurant, [name]: value });
+    setUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
+
   const handleSubmit = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/v1/restaurants/",
-        {
-          method: "POST",
-          body: JSON.stringify(restaurant),
-          headers: { "Content-Type": "application/json" },
-        }
+      const newUser = await AuthService.register(
+        user.username,
+        user.name,
+        user.email,
+        user.password
       );
-      if (response.ok) {
-        alert("Restaurant added to successfully!");
-        setRestaurants({
-          name: "",
-          type: "",
-          imageUrl: "",
+
+      if (newUser.status === 200) {
+        Swal.fire({
+          title: "User Registration",
+          text: newUser.data.message,
+          icon: "success",
+        }).then(() => {
+          setUser({
+            username: "",
+            name: "",
+            email: "",
+            password: "",
+          });
+          navigate("/signin");
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error("Registration error:", error);
+      Swal.fire({
+        title: "Registration Failed",
+        text: error.response?.data?.message || "Registeration Failed!",
+        icon: "error",
+      });
     }
   };
+
   return (
     <div className="container mx-auto flex items-center flex-col">
       <h1 className="text-2xl mt-3">NICE TO MEET YOU MY NEW USER</h1>
@@ -40,7 +60,7 @@ const Signup = () => {
         <input
           type="text"
           name="username"
-          value={restaurant.username}
+          value={user.username}
           className="input"
           placeholder="username"
           onChange={handleChange}
@@ -49,9 +69,9 @@ const Signup = () => {
       <div className="mt-2">
         <legend className="mt-2">PASSWORD:</legend>
         <input
-          type="text"
+          type="password"
           name="password"
-          value={restaurant.password}
+          value={user.password}
           className="input"
           placeholder="password"
           onChange={handleChange}
@@ -62,29 +82,25 @@ const Signup = () => {
         <input
           type="text"
           name="name"
-          value={restaurant.name}
+          value={user.name}
           className="input"
           placeholder="name"
           onChange={handleChange}
         />
         <legend className="mt-2">EMAIL:</legend>
         <input
-          type="text"
+          type="email"
           name="email"
-          value={restaurant.email}
+          value={user.email}
           className="input"
           placeholder="email"
           onChange={handleChange}
         />
       </div>
       <div className="mt-3 space-x-2">
-        <a
-          href="/"
-          onClick={handleSubmit}
-          className="btn btn-soft btn-success "
-        >
+        <button onClick={handleSubmit} className="btn btn-soft btn-success">
           SIGN UP
-        </a>
+        </button>
         <button className="btn btn-soft btn-error">CANCEL</button>
       </div>
     </div>

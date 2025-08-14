@@ -1,6 +1,8 @@
 import React from "react";
-
+import { useAuthContext } from "../context/AuthContext";
+import UserProfile from "./UserProfile";
 const Navbar = () => {
+  const { user } = useAuthContext();
   const menuItems = [
     {
       name: "Add Restaurant",
@@ -61,12 +63,21 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end space-x-2">
-        <a href="/signup" className="btn btn-soft btn-primary">
-          SIGN UP
-        </a>
-        <a href="/signin" className="btn btn-soft btn-success ">
-          SIGN IN
-        </a>
+        {user ? (
+          <div>
+            <UserProfile />
+          </div>
+        ) : (
+          <div>
+            {" "}
+            <a href="/signup" className="btn btn-soft btn-primary">
+              SIGN UP
+            </a>
+            <a href="/signin" className="btn btn-soft btn-success ">
+              SIGN IN
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

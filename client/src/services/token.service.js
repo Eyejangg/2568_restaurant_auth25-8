@@ -2,7 +2,7 @@ const getUser = () => {
   return JSON.parse(localStorage.getItem("user"));
 };
 
-const setUser = () => {
+const setUser = (user) => {
   localStorage.setItem("user", JSON.stringify(user));
 };
 

@@ -1,35 +1,37 @@
-import React, { useState } from "react";
-
+import { useState } from "react";
+import AuthService from "../services/auth.service.js";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 const Signin = () => {
-  const [restaurant, setRestaurants] = useState({
-    name: "",
-    type: "",
-    imageUrl: "",
-  });
+  const [signin, setSignin] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setRestaurants({ ...restaurant, [name]: value });
+    setSignin((signin) => ({ ...signin, [name]: value }));
   };
+
   const handleSubmit = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/v1/restaurants/login",
-        {
-          method: "POST",
-          body: JSON.stringify(restaurant),
-          headers: { "Content-Type": "application/json" },
-        }
+      const currentUser = await AuthService.login(
+        signin.username,
+        signin.password
       );
-      if (response.ok) {
-        alert("Restaurant added to successfully!");
-        setRestaurants({
-          name: "",
-          type: "",
-          imageUrl: "",
+      if (currentUser.status === 200) {
+        Swal.fire({
+          title: "USER SIGNIN",
+          text: "Signin Successfully",
+          icon: "success",
+        }).then(() => {
+          navigate("/");
         });
       }
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        title: "USER SIGNIN",
+        text: error?.response?.data?.message || "Signin Failed!",
+        icon: "error",
+      });
     }
   };
   return (
@@ -39,8 +41,8 @@ const Signin = () => {
         <legend className="mt-2">USERNAME:</legend>
         <input
           type="text"
-          name="name"
-          value={restaurant.name}
+          name="username"
+          value={signin.username}
           className="input"
           placeholder="username"
           onChange={handleChange}
@@ -50,19 +52,15 @@ const Signin = () => {
         <legend className="mt-2">PASSWORD:</legend>
         <input
           type="text"
-          name="type"
-          value={restaurant.type}
+          name="password"
+          value={signin.password}
           className="input"
           placeholder="password"
           onChange={handleChange}
         />
       </div>
       <div className="mt-3 space-x-2">
-        <a
-          href="/"
-          onClick={handleSubmit}
-          className="btn btn-soft btn-success "
-        >
+        <a onClick={handleSubmit} className="btn btn-soft btn-success ">
           SIGN IN
         </a>
         <button className="btn btn-soft btn-error">CANCEL</button>

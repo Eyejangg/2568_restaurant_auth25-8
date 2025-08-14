@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Restaurant from "../components/Restaurants";
 import RestaurantService from "../services/restaurant.service";
+import Swal from "sweetalert2";
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
   // const [keyword, setKeyword] = useState("");
@@ -18,14 +19,15 @@ const Home = () => {
       );
     });
     setFilteredRestaurants(result);
-    // console.log(result);
   };
   useEffect(() => {
     const getAllRestaurants = async () => {
       try {
         const response = await RestaurantService.getAllRestaurants();
+        console.log(response);
         if (response.status === 200) {
           setRestaurants(response.data);
+          console.log(response.data);
           setFilteredRestaurants(response.data);
         }
       } catch (error) {
@@ -36,7 +38,9 @@ const Home = () => {
         });
       }
     };
-  });
+
+    getAllRestaurants();
+  }, []);
   return (
     <div className="container mx-auto ">
       {
