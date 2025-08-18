@@ -1,12 +1,14 @@
 import React from "react";
 import { useAuthContext } from "../context/AuthContext";
 import UserProfile from "./UserProfile";
+
 const Navbar = () => {
   const { user } = useAuthContext();
   const menuItems = [
     {
       name: "Add Restaurant",
       url: "/newRestaurant",
+      roles: ["admin", "moderator"],
     },
     {
       name: "About Us",
@@ -34,18 +36,20 @@ const Navbar = () => {
               />{" "}
             </svg>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-          >
-            {menuItems.map((item) => {
-              return (
-                <li>
-                  <a href={item.url}>{item.name}</a>
-                </li>
-              );
-            })}
-          </ul>
+          {user && user.authorities.includes("ROLES_ADMIN") && (
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            >
+              {menuItems.map((item) => {
+                return (
+                  <li>
+                    <a href={item.url}>{item.name}</a>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
         <a href="/" className="btn btn-ghost text-xl">
           Grab Restaurant

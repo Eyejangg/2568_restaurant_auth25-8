@@ -1,10 +1,21 @@
-import { useState } from "react";
-import AuthService from "../services/auth.service.js";
+import { useState, useEffect } from "react";
+import AuthService from "../services/auth.service";
+import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 const Signin = () => {
   const [signin, setSignin] = useState({ username: "", password: "" });
   const navigate = useNavigate();
+
+  const { signin: signinFn, user } = useAuthContext();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user]);
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSignin((signin) => ({ ...signin, [name]: value }));
@@ -22,6 +33,7 @@ const Signin = () => {
           text: "Signin Successfully",
           icon: "success",
         }).then(() => {
+          signinFn(currentUser.data);
           navigate("/");
         });
       }

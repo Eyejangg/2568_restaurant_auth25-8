@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 const AddRestaurant = () => {
+
   const [restaurant, setRestaurants] = useState({
     name: "",
     type: "",
@@ -34,7 +35,8 @@ const AddRestaurant = () => {
   };
   return (
     <div className="container mx-auto flex items-center flex-col">
-      <h1 className="text-2xl mt-3">Add New Restaurant</h1>
+        <h1 className="text-2xl mt-3">Add New Restaurant</h1>
+      
       <div className="mt-2">
         <legend className="mt-2">What is your restaurant name?</legend>
         <input
