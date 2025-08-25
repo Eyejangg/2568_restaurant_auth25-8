@@ -1,33 +1,30 @@
+
+
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import Restaurant from "../../../server/models/restaurant.model";
-import Swal from "sweetalert2"
+//import Restaurant from "../../../server/models/restaurant.model";
+import Swal from "sweetalert2";
 
+// ...existing code...
 const AddRestaurant = () => {
   const [restaurant, setRestaurants] = useState({
     name: "",
     type: "",
     imageUrl: "",
   });
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRestaurants({ ...restaurant, [name]: value });
-  };
-  const handleSubmit = async () => {
-    // try {
-    //   const response = await fetch(
-    //     "http://localhost:5000/api/v1/restaurants/",
-    //     {
-    //       method: "POST",
-    //       body: JSON.stringify(restaurant),
-    //       headers: { "Content-Type": "application/json" },
-    //     }
-    //   );
-
-      const response = await restaurant.service.insertRestaurant(restaurant);
-      //console.log(response);
-      
-      if (response.status === 200) {
+  // ...existing code...
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/v1/restaurants/",
+        {
+          method: "POST",
+          body: JSON.stringify(restaurant),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.ok) {
         Swal.fire({
           title: "Add restaurant",
           text: "Restaurant added successfully!",
@@ -38,14 +35,17 @@ const AddRestaurant = () => {
           type: "",
           imageUrl: "",
         });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add restaurant");
       }
     } catch (error) {
       console.log(error);
       Swal.fire({
         title: "Add restaurant",
-        text: error?.response?.data?.message || error.message;
+        text: error.message,
         icon: "error",
-      })
+      });
     }
   };
   return (
