@@ -27,10 +27,10 @@ const innitRole = () => {
   role.create({ id: 3, name: "admin" });
 };
 
-// db.sequelize.sync({ force: false }).then(() => {
-//   innitRole();
-//   console.log("Drop and Sync");
-// });
+//db.sequelize.sync({ force: false }).then(() => {
+  //innitRole();
+  //console.log("Drop and Sync");
+//});
 
 app.get("/", (req, res) => {
   res.send("Restaurant Restful API");

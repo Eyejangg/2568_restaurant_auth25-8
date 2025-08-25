@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import Restaurant from "../../../server/models/restaurant.model";
+import Swal from "sweetalert2"
 
 const AddRestaurant = () => {
-
   const [restaurant, setRestaurants] = useState({
     name: "",
     type: "",
@@ -12,17 +14,25 @@ const AddRestaurant = () => {
     setRestaurants({ ...restaurant, [name]: value });
   };
   const handleSubmit = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/v1/restaurants/",
-        {
-          method: "POST",
-          body: JSON.stringify(restaurant),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      if (response.ok) {
-        alert("Restaurant added to successfully!");
+    // try {
+    //   const response = await fetch(
+    //     "http://localhost:5000/api/v1/restaurants/",
+    //     {
+    //       method: "POST",
+    //       body: JSON.stringify(restaurant),
+    //       headers: { "Content-Type": "application/json" },
+    //     }
+    //   );
+
+      const response = await restaurant.service.insertRestaurant(restaurant);
+      //console.log(response);
+      
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Add restaurant",
+          text: "Restaurant added successfully!",
+          icon: "success",
+        });
         setRestaurants({
           name: "",
           type: "",
@@ -31,12 +41,17 @@ const AddRestaurant = () => {
       }
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        title: "Add restaurant",
+        text: error?.response?.data?.message || error.message;
+        icon: "error",
+      })
     }
   };
   return (
     <div className="container mx-auto flex items-center flex-col">
-        <h1 className="text-2xl mt-3">Add New Restaurant</h1>
-      
+      <h1 className="text-2xl mt-3">Add New Restaurant</h1>
+
       <div className="mt-2">
         <legend className="mt-2">What is your restaurant name?</legend>
         <input
